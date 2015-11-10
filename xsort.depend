@@ -16,17 +16,18 @@
 	<string>
 	<fstream>
 
-1447186744 source:/home/yunhasnawa/Repository/xsort/src/Input.cpp
+1447188237 source:/home/yunhasnawa/Repository/xsort/src/Input.cpp
 	"Input.h"
 	<iostream>
 	<string.h>
 
-1447181193 /home/yunhasnawa/Repository/xsort/include/Sorter.h
+1447189994 /home/yunhasnawa/Repository/xsort/include/Sorter.h
 	<vector>
+	<string>
 	"Param.h"
 	"Input.h"
 
-1447186305 source:/home/yunhasnawa/Repository/xsort/src/Sorter.cpp
+1447187145 source:/home/yunhasnawa/Repository/xsort/src/Sorter.cpp
 	"Sorter.h"
 	<string>
 	<string.h>

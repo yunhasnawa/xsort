@@ -12,7 +12,6 @@ Input::Input(std::string fname)
 
 Input::~Input()
 {
-    //dtor
     this->in_stream->close();
     delete this->in_stream;
 }
@@ -31,10 +30,6 @@ std::string Input::read_until_char_found(size_t start, char seek)
 {
     this->last_char_found_size = 0;
     this->last_char_found_index = -1;
-
-    //char* text = new char[2];
-
-    //text[1] = '\0';
 
     std::string text = "";
 
@@ -57,8 +52,6 @@ std::string Input::read_until_char_found(size_t start, char seek)
             if(buffer[0] != seek)
             {
                 buffer[1] = '\0';
-
-                //strcat(text, buffer);
 
                 std::string found(buffer);
 
