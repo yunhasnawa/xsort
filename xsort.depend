@@ -1,0 +1,34 @@
+# depslib dependency file v1.0
+1447178311 source:/home/yunhasnawa/Repository/xsort/main.cpp
+	<stdlib.h>
+	<iostream>
+	<getopt.h>
+	"Param.h"
+	"Sorter.h"
+
+1447177823 /home/yunhasnawa/Repository/xsort/include/Param.h
+	<string>
+
+1447177823 source:/home/yunhasnawa/Repository/xsort/src/Param.cpp
+	"Param.h"
+
+1447186744 /home/yunhasnawa/Repository/xsort/include/Input.h
+	<string>
+	<fstream>
+
+1447186744 source:/home/yunhasnawa/Repository/xsort/src/Input.cpp
+	"Input.h"
+	<iostream>
+	<string.h>
+
+1447181193 /home/yunhasnawa/Repository/xsort/include/Sorter.h
+	<vector>
+	"Param.h"
+	"Input.h"
+
+1447186305 source:/home/yunhasnawa/Repository/xsort/src/Sorter.cpp
+	"Sorter.h"
+	<string>
+	<string.h>
+	<iostream>
+
