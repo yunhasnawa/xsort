@@ -23,10 +23,13 @@ class Sorter
         Input* input;
         int line_read_index;
         bool eof_reached;
+        int saved_mem_block;
         void init();
         void fill_mem_block();
         void sort_mem_block();
-        //static void quick_sort(std::vector<string>* lines, size_t line_count);
+        void save_mem_block();
+        void init_mem_block();
+        std::string current_mem_block_fname();
 };
 
 #endif // SORTER_H

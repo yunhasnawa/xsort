@@ -1,5 +1,7 @@
 #include "Sorter.h"
 #include <algorithm>
+#include <fstream>
+#include <sstream>
 #include <iostream>
 
 Sorter::Sorter(Param* param)
@@ -17,24 +19,41 @@ Sorter::~Sorter()
 
 void Sorter::init()
 {
-    this->mem_block = new std::vector<std::string>;
+    this->init_mem_block();
     this->mem_limit = this->param->get_memory_size() * 1024; // In MB
     this->input = new Input(this->param->get_input_fname());
     this->line_read_index = 0;
     this->eof_reached = false;
+    this->saved_mem_block = 0;
+}
+
+std::string Sorter::current_mem_block_fname()
+{
+    std::string name = "result/mem_block_";
+
+    std::ostringstream s;
+
+    s << this->saved_mem_block;
+
+    std::string num = s.str();
+
+    name += (num + ".parts");
+
+    return name;
 }
 
 void Sorter::fill_mem_block()
 {
+    std::cout << "-- Reading from files.." << std::endl;
+
     size_t total_read = 0;
 
     bool go = true;
 
     while(go)
     {
-        //std::cout << "---- Start read at: " << this->line_read_index << std::endl;
-
-        std::string line = this->input->read_until_char_found(this->line_read_index, '\n'); // Read a line.
+        // Read a line.
+        std::string line = this->input->read_until_char_found(this->line_read_index, '\n');
 
         size_t read_size = this->input->get_last_char_found_size();
 
@@ -48,11 +67,7 @@ void Sorter::fill_mem_block()
         {
             this->mem_block->push_back(line);
 
-            //std::cout << ">>" << line << "<<" << std::endl;
-
             total_read += read_size;
-
-            //std::cout << "---- Total read: " << line.length() << std::endl;
 
             if(total_read >= this->mem_limit)
             {
@@ -62,8 +77,6 @@ void Sorter::fill_mem_block()
             {
                 int last_index = this->input->get_last_char_found_index();
 
-                //std::cout << "---- Newline found at: " << last_index << std::endl;
-
                 this->line_read_index = last_index + 1;
             }
         }
@@ -72,14 +85,39 @@ void Sorter::fill_mem_block()
 
 void Sorter::sort_mem_block()
 {
+    std::cout << "-- Sorting memory blocks.." << std::endl;
+
     sort(this->mem_block->begin(), this->mem_block->end());
+}
+
+void Sorter::save_mem_block()
+{
+    std::cout << "-- Saving memory blocks to parts." << std::endl;
+
+    std::string concat = "";
 
     std::vector<std::string>::iterator it;
 
     for(it = this->mem_block->begin(); it < this->mem_block->end(); it++)
     {
-        std::cout << *it << std::endl;
+        std::string s = *it;
+        concat += (s + "\n");
     }
+
+    std::string fname = this->current_mem_block_fname();
+
+    std::ofstream out(fname.c_str());
+
+    out << concat;
+
+    out.close();
+
+    this->saved_mem_block++;
+}
+
+void Sorter::init_mem_block()
+{
+    this->mem_block = new std::vector<std::string>;
 }
 
 void Sorter::begin_sorting()
@@ -91,63 +129,16 @@ void Sorter::begin_sorting()
     while(!this->eof_reached)
     {
         this->fill_mem_block();
-
-        std::cout << "----------------------" << std::endl;
-        std::cout << "----- Block FULL -----" << std::endl;
-        std::cout << "----------------------" << std::endl;
-
         this->sort_mem_block();
+        this->save_mem_block();
+        this->init_mem_block();
+
+        std::cout << "**********************" << std::endl;
+        std::cout << "--------- " << this->saved_mem_block << " ---------" << std::endl;
+        std::cout << "**********************" << std::endl;
 
         limit++;
-        if(limit > 2)
+        if(limit > 99)
             break;
     }
-
-    /*
-    std::string line0 = this->input->read_until_char_found(0, '\n'); // Read a line.
-    std::cout << line0 << std::endl;
-    std::string line1 = this->input->read_until_char_found(101, '\n'); // Read a line.
-    std::cout << line1 << std::endl;
-    std::string line2 = this->input->read_until_char_found(202, '\n'); // Read a line.
-    std::cout << line2 << std::endl;
-    std::string line3 = this->input->read_until_char_found(303, '\n'); // Read a line.
-    std::cout << line3 << std::endl;
-    */
 }
-
-/*
-void Sorter::quick_sort(std::vector<string>* lines, size_t line_count)
-{
-    if(line_count < 2)
-        return;
-
-    std::string pivot = lines.at(line_count/2);
-
-    std::vector<string>* left = lines;
-    std::vector<string>* right = lines + (line_count - 1);
-
-    while (left <= right)
-    {
-        if(strcmp(*left, pivot) < 0)
-        {
-            left++;
-        }
-        else if(strcmp(*right, pivot) > 0)
-        {
-            right--;
-        }
-        else
-        {
-            // Swap
-            char* temp = *left;
-            *left = *right;
-            *right = temp;
-
-            left++;
-            right--;
-        }
-    }
-    Engine::quickSort(lines, (right - lines + 1));
-    Engine::quickSort(left, (lines + lineCount - left));
-}
-*/
